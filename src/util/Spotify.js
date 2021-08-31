@@ -25,4 +25,13 @@ Spotify.getAccessToken = () => {
     }
 };
 
+Spotify.search = (query) => {
+    const url = `https://api.spotify.com/search?type=track&q=${query}`;
+    fetch(url, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+    }).then((response) => {
+        return response.json();
+    })
+};
+
 module.exports = Spotify;
