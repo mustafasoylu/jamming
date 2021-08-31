@@ -25,6 +25,15 @@ class App extends React.Component {
     }
   }
 
+  removeTrack(track) {
+    const index = this.state.playlistTracks.indexOf(track.id);
+    if (index > -1) {
+      const newPlaylistTracks = this.state.playlistTracks;
+      newPlaylistTracks.splice(index, 1);
+      this.setState({ playlistTracks: newPlaylistTracks });
+    }
+  }
+
   render() {
     return (
       <div>
