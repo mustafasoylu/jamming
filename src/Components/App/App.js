@@ -6,13 +6,17 @@ import SearchResults from '../SearchResults/SearchResults';
 import Playlist from '../Playlist/Playlist';
 import Spotify from '../../util/Spotify.js';
 
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       searchResults: [],
       playlistName: "New Playlist",
-      playlistTracks: []
+      playlistTracks: [],
+      successOnSave: null
     }
 
     this.addTrack = this.addTrack.bind(this);
@@ -20,6 +24,7 @@ export default class App extends React.Component {
     this.updatePlaylistName = this.updatePlaylistName.bind(this);
     this.savePlaylist = this.savePlaylist.bind(this);
     this.search = this.search.bind(this);
+    this.closeAlert = this.closeAlert.bind(this);
   }
 
   addTrack(track) {
@@ -47,12 +52,10 @@ export default class App extends React.Component {
     const trackURIs = this.state.playlistTracks.map(track => track.uri);
     Spotify.savePlaylist(this.state.playlistName, trackURIs).then((success) => {
       if (success) {
-        this.setState({ playlistName: "New Playlist", playlistTracks: [] });
-        window.alert("Successfully saved");
+        this.setState({ playlistName: "New Playlist", playlistTracks: [], success: true });
       } else {
-        window.alert("Could not save");
+        this.setState({ success: false });
       }
-
     });
   }
 
@@ -64,12 +67,36 @@ export default class App extends React.Component {
     Spotify.search(term).then(searchResults => this.setState({ searchResults: searchResults }));
   }
 
+  closeAlert() {
+    this.setState({ success: null });
+  }
+
   render() {
+    let alert;
+    if (this.state.success === null) {
+      alert = false;
+    }
+    else if (this.state.success) {
+      alert = (
+        <Alert severity="success" onClose={() => { this.closeAlert(); }}>
+          <AlertTitle>Success</AlertTitle>
+          Sucessfully saved the playlist.
+        </Alert>
+      );
+    } else {
+      alert = (
+        <Alert severity="error" onClose={() => { this.closeAlert(); }}>
+          <AlertTitle>Error</AlertTitle>
+          Error while saving the playlist!
+        </Alert>
+      );
+    }
     return (
       <div>
         <h1>Ja<span className="highlight">mmm</span>ing</h1>
         <div className="App">
           <SearchBar onSearch={this.search} />
+          {alert && alert}
           <div className="App-playlist">
             <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack} />
             <Playlist playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks} onRemove={this.removeTrack} onNameChange={this.updatePlaylistName} onSave={this.savePlaylist} />
