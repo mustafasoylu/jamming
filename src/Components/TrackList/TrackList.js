@@ -3,11 +3,11 @@ import "./TrackList.css";
 
 import Track from '../Track/Track';
 
-export class TrackList extends Component {
+export default class TrackList extends Component {
     render() {
         return (
             <div className="TrackList">
-                {this.props.tracks.map(track => <Track track={track} onAdd={this.props.onAdd} isRemoval={this.props.isRemoval} onRemove={this.props.onRemove} />)}
+                {this.props.tracks.map(track => <Track key={this.props.parentName + track.id} track={track} onAdd={this.props.onAdd} isRemoval={this.props.isRemoval} onRemove={this.props.onRemove} />)}
             </div>
         );
     }
