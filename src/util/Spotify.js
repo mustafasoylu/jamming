@@ -28,10 +28,35 @@ Spotify.getAccessToken = () => {
 Spotify.search = (query) => {
     const url = `https://api.spotify.com/search?type=track&q=${query}`;
     fetch(url, {
-        headers: { Authorization: `Bearer ${accessToken}` }
+        headers: { Authorization: `Bearer ${Spotify.getAccessToken()}` }
     }).then((response) => {
         return response.json();
-    })
+    });
+};
+
+Spotify.savePlaylist = (name, playlist) => {
+    const headers = { Authorization: `Bearer ${Spotify.getAccessToken()}` };
+    let userID;
+
+    const url = "https://api.spotify.com/v1/me";
+    fetch(url, { headers: headers }).then((response) => {
+        return response.json();
+    }).then((JSONresponse) => {
+        userID = JSONresponse.id;
+        return fetch(`https://api.spotify.com/v1/users/${userID}/playlists`, {
+            headers: headers,
+            method: 'POST',
+            body: JSON.stringify({ name: name })
+        })
+    }).then((playlistId) => {
+        return fetch(`https://api.spotify.com/v1/users/${userID}/playlists/${playlistId}/tracks`, {
+            headers: headers,
+            method: 'POST',
+            body: JSON.stringify({ uris: playlist })
+        })
+    });
+
+
 };
 
 module.exports = Spotify;
