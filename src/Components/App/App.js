@@ -73,7 +73,7 @@ export default class App extends React.Component {
 
   render() {
     let alert;
-    if (this.state.success === null) {
+    if (this.state.success === null || typeof this.state.success === "undefined") {
       alert = false;
     }
     else if (this.state.success) {

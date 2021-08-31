@@ -1,6 +1,7 @@
 let accessToken;
 const clientId = '193957034d294928a1c3c76c09466fd5'; // Your client id
-const redirecUri = 'http://localhost:3000/';
+const redirecUri = 'http://soylumu.surge.sh';
+// const redirecUri = 'http://localhost:3000/';
 
 const Spotify = {};
 
